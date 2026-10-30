@@ -1,0 +1,12 @@
+{
+  "name": "video-playback-controller",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dodatek Firefox do sterowania odtwarzaniem PLAY NOW.",
+  "scripts": {
+    "test": "node --test src/test/js/*.test.cjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
