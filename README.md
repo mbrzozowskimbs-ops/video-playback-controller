@@ -1,6 +1,6 @@
 # video-playback-controller
 
-Własny pilot do PLAY NOW w Firefoksie. Wersja 1.2.0.
+Własny pilot do PLAY NOW w Firefoksie. Wersja 1.3.0.
 
 Przyciski ±10 sekund, ±1 minuta, własny skok 1–900 sekund oraz odtwarzanie/pauza.
 Sterowanie działa także podczas pauzy. Panel otwiera się po kliknięciu ikony dodatku.
@@ -16,7 +16,7 @@ Wymagania: Maven 3.6.3+, JDK 8+ (do uruchomienia Mavena) oraz Node.js 18+ w PATH
 mvn clean verify
 ```
 
-Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.2.0-firefox.zip` w fazie `package`.
+Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.3.0-firefox.zip` w fazie `package`.
 
 - `mvn test` — same testy.
 - `mvn package -DskipTests` — pakowanie bez testów.
@@ -64,7 +64,10 @@ i zmerguj do `main`. Workflow odmawia wydania wersji `-SNAPSHOT`.
 Numer musi być wyższy niż poprzednia wersja w AMO. Gdy podpis nie zmieści się w limicie,
 nie ponawiaj zadania (AMO odrzuci ten sam numer): pobierz XPI z panelu AMO i utwórz wydanie ręcznie,
 np. `gh release create v1.0.1 video-playback-controller-1.0.1-firefox.zip video-playback-controller-1.0.1-firefox.xpi --target <commit>`.
-Manifest nie ma `gecko.update_url`, więc nową wersję instaluje się ręcznie z pliku XPI.
+Automatyczne aktualizacje: manifest ma `gecko.update_url` wskazujący `updates.json` z najnowszego GitHub Release
+(`releases/latest/download/updates.json`). Workflow dołącza ten plik do każdego wydania; wskazuje on podpisany XPI.
+Firefox sprawdza aktualizacje mniej więcej raz na dobę; ręcznie: `about:addons` → ⚙ → „Sprawdź dostępność aktualizacji”.
+Wersje starsze niż 1.3.0 nie mają `update_url`, więc 1.3.0 trzeba raz zainstalować ręcznie z pliku XPI.
 
 ## Klawiatura
 
