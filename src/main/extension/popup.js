@@ -1,5 +1,6 @@
 'use strict';
 const statusElement = document.querySelector('#status');
+document.querySelector('#version').textContent = `Wersja ${browser.runtime.getManifest().version}`;
 let busy = false;
 async function send(action, seconds) {
   if (busy) return;
