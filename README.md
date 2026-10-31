@@ -1,9 +1,12 @@
 # video-playback-controller
 
-Własny pilot do PLAY NOW w Firefoksie. Wersja 1.0.0.
+Własny pilot do PLAY NOW w Firefoksie. Wersja 1.1.0.
 
 Przyciski ±10 sekund, ±1 minuta, własny skok 1–900 sekund oraz odtwarzanie/pauza.
 Sterowanie działa także podczas pauzy. Panel otwiera się po kliknięciu ikony dodatku.
+
+Po ruchu myszy nad wideo pojawia się też pasek z przyciskami −1 min, −10 s, odtwarzanie/pauza, +10 s i +1 min.
+Pasek znika po 2,5 s bez ruchu myszy i działa również na pełnym ekranie.
 
 ## Budowanie przez Maven
 
@@ -13,7 +16,7 @@ Wymagania: Maven 3.6.3+, JDK 8+ (do uruchomienia Mavena) oraz Node.js 18+ w PATH
 mvn clean verify
 ```
 
-Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.0.0-firefox.zip` w fazie `package`.
+Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.1.0-firefox.zip` w fazie `package`.
 
 - `mvn test` — same testy.
 - `mvn package -DskipTests` — pakowanie bez testów.
@@ -55,7 +58,9 @@ kończy się ostrzeżeniem.
 Wymagane sekrety Actions: `AMO_JWT_ISSUER` i `AMO_JWT_SECRET`
 z [poświadczeń API AMO](https://addons.mozilla.org/developers/addon/api/key/).
 
-Aby wydać wersję, ustaw ten sam nowy numer `X.Y.Z` we wszystkich trzech plikach i zmerguj do `main`.
+Na `develop` `pom.xml` i `package.json` mają wersję `X.Y.Z-SNAPSHOT`, a `manifest.json` samo `X.Y.Z`
+(Firefox przyjmuje tylko liczby). Aby wydać wersję, usuń `-SNAPSHOT` z `pom.xml` i `package.json`
+i zmerguj do `main`. Workflow odmawia wydania wersji `-SNAPSHOT`.
 Numer musi być wyższy niż poprzednia wersja w AMO. Gdy podpis nie zmieści się w limicie,
 nie ponawiaj zadania (AMO odrzuci ten sam numer): pobierz XPI z panelu AMO i utwórz wydanie ręcznie,
 np. `gh release create v1.0.1 video-playback-controller-1.0.1-firefox.zip video-playback-controller-1.0.1-firefox.xpi --target <commit>`.
@@ -82,4 +87,4 @@ Manifest nie ma `gecko.update_url`, więc nową wersję instaluje się ręcznie 
 
 `mvn clean verify`. Opcjonalnie same testy Node: `npm test`.
 
-Przed podpisaniem: test na działającym PLAY NOW w Firefoksie (panel, skróty, oba kierunki, pauza, brak programu, inne strony).
+Przed podpisaniem: test na działającym PLAY NOW w Firefoksie (panel, pasek nad wideo także na pełnym ekranie, skróty, oba kierunki, pauza, brak programu, inne strony).

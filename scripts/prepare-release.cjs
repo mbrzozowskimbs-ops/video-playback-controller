@@ -39,6 +39,10 @@ module.exports = { prepareRelease, amoJwt };
 
 if (require.main === module) {
   const firefox = require('../src/main/extension/manifest.json');
+  if (require('../package.json').version.endsWith('-SNAPSHOT')) {
+    console.error('Wersja -SNAPSHOT nie jest wydawana. Przed merge do main usuń -SNAPSHOT z pom.xml i package.json.');
+    process.exit(1);
+  }
   const { AMO_JWT_ISSUER: issuer, AMO_JWT_SECRET: secret } = process.env;
   prepareRelease({
     version: firefox.version,
