@@ -1,6 +1,6 @@
 # video-playback-controller
 
-Własny pilot do PLAY NOW w Firefoksie. Wersja 1.1.0.
+Własny pilot do PLAY NOW w Firefoksie. Wersja 1.2.0.
 
 Przyciski ±10 sekund, ±1 minuta, własny skok 1–900 sekund oraz odtwarzanie/pauza.
 Sterowanie działa także podczas pauzy. Panel otwiera się po kliknięciu ikony dodatku.
@@ -16,7 +16,7 @@ Wymagania: Maven 3.6.3+, JDK 8+ (do uruchomienia Mavena) oraz Node.js 18+ w PATH
 mvn clean verify
 ```
 
-Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.1.0-firefox.zip` w fazie `package`.
+Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.2.0-firefox.zip` w fazie `package`.
 
 - `mvn test` — same testy.
 - `mvn package -DskipTests` — pakowanie bez testów.
