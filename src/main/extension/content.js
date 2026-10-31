@@ -3,6 +3,67 @@
   const controls = globalThis.PlayNowControls;
   let feedback;
   let feedbackTimer;
+  let panel;
+  let panelTimer;
+  let panelFrame = 0;
+
+  function mount(host) {
+    const parent = document.fullscreenElement || document.documentElement;
+    if (host.parentNode !== parent) parent.append(host);
+  }
+
+  function hidePanel() {
+    if (panel) panel.host.hidden = true;
+  }
+
+  function createPanel() {
+    const host = document.createElement('div');
+    const shadow = host.attachShadow({ mode: 'closed' });
+    const style = document.createElement('style');
+    style.textContent = ':host{all:initial;position:fixed;z-index:2147483647;transform:translateX(-50%)}'
+      + 'div{display:flex;gap:6px;padding:6px;background:rgba(20,20,28,.8);border-radius:12px}'
+      + 'button{font:600 15px system-ui;color:white;background:transparent;border:1px solid #777;border-radius:8px;padding:8px 12px;cursor:pointer}'
+      + 'button:hover,button:focus-visible{background:#3a3a48}';
+    const bar = document.createElement('div');
+    for (const [label, message] of [
+      ['−1 min', { action: 'seek', seconds: -60 }],
+      ['−10 s', { action: 'seek', seconds: -10 }],
+      ['⏯', { action: 'toggle' }],
+      ['+10 s', { action: 'seek', seconds: 10 }],
+      ['+1 min', { action: 'seek', seconds: 60 }],
+    ]) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.textContent = label;
+      button.addEventListener('click', event => {
+        event.stopPropagation();
+        void perform(message);
+      });
+      bar.append(button);
+    }
+    // Keep clicks and presses from reaching the player underneath.
+    for (const type of ['pointerdown', 'mousedown', 'dblclick']) {
+      bar.addEventListener(type, event => event.stopPropagation());
+    }
+    bar.addEventListener('pointerenter', () => clearTimeout(panelTimer));
+    bar.addEventListener('pointerleave', () => { panelTimer = setTimeout(hidePanel, 2500); });
+    shadow.append(style, bar);
+    return { host };
+  }
+
+  function showPanel(x, y) {
+    const video = controls.pickVideo(document.querySelectorAll('video'));
+    const rect = video?.getBoundingClientRect();
+    if (!rect || x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) return;
+    panel ??= createPanel();
+    mount(panel.host);
+    panel.host.style.left = `${rect.left + rect.width / 2}px`;
+    // Above the player's own bottom control bar.
+    panel.host.style.top = `${Math.max(rect.top + 8, rect.bottom - 140)}px`;
+    panel.host.hidden = false;
+    clearTimeout(panelTimer);
+    panelTimer = setTimeout(hidePanel, 2500);
+  }
 
   function showFeedback(text) {
     if (!feedback?.isConnected) {
@@ -14,9 +75,9 @@
       feedback.setAttribute('role', 'status');
       feedback.setAttribute('aria-live', 'polite');
       shadow.append(style, feedback);
-      (document.fullscreenElement || document.documentElement).append(host);
       feedback.hostElement = host;
     }
+    mount(feedback.hostElement);
     feedback.textContent = text;
     feedback.hostElement.hidden = false;
     clearTimeout(feedbackTimer);
@@ -63,4 +124,15 @@
     event.stopImmediatePropagation();
     void perform(seconds === undefined ? { action: 'toggle' } : { action: 'seek', seconds });
   }, true);
+
+  document.addEventListener('mousemove', event => {
+    if (panelFrame) return;
+    const { clientX, clientY } = event;
+    panelFrame = requestAnimationFrame(() => {
+      panelFrame = 0;
+      showPanel(clientX, clientY);
+    });
+  }, { capture: true, passive: true });
+
+  document.addEventListener('fullscreenchange', hidePanel);
 })();
