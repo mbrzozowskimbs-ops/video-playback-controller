@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pl.rubibubi.plugins</groupId>
     <artifactId>video-playback-controller</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>video-playback-controller</name>
     <description>Dodatek Firefox do sterowania odtwarzaniem PLAY NOW.</description>
