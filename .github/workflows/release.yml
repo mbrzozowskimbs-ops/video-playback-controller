@@ -91,11 +91,17 @@ jobs:
             --approval-timeout 3600000
           mv target/amo/*.xpi "target/video-playback-controller-$VERSION-firefox.xpi"
 
+      # Installed copies poll gecko.update_url, which points at this file in the latest release.
+      - name: Create Firefox update manifest
+        run: node scripts/update-manifest.cjs > target/updates.json
+
       - name: Store signed XPI
         uses: actions/upload-artifact@v4
         with:
           name: firefox-xpi
-          path: target/video-playback-controller-*-firefox.xpi
+          path: |
+            target/video-playback-controller-*-firefox.xpi
+            target/updates.json
           if-no-files-found: error
 
   github-release:
@@ -117,7 +123,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
           VERSION: ${{ needs.check.outputs.version }}
         run: |
-          files=("target/video-playback-controller-$VERSION-firefox.zip" "target/video-playback-controller-$VERSION-firefox.xpi")
+          files=("target/video-playback-controller-$VERSION-firefox.zip" "target/video-playback-controller-$VERSION-firefox.xpi" target/updates.json)
           if gh release view "v$VERSION" > /dev/null 2>&1; then
             gh release upload "v$VERSION" "${files[@]}" --clobber
           else
