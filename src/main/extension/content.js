@@ -5,6 +5,7 @@
   let feedbackTimer;
   let panel;
   let panelTimer;
+  let panelHovered = false;
   let panelFrame = 0;
 
   function mount(host) {
@@ -13,7 +14,14 @@
   }
 
   function hidePanel() {
+    panelHovered = false;
     if (panel) panel.host.hidden = true;
+  }
+
+  // Restarts the hide countdown; the bar stays visible while the pointer is over it.
+  function scheduleHidePanel() {
+    clearTimeout(panelTimer);
+    if (!panelHovered) panelTimer = setTimeout(hidePanel, 2500);
   }
 
   function createPanel() {
@@ -37,6 +45,7 @@
       button.textContent = label;
       button.addEventListener('click', event => {
         event.stopPropagation();
+        scheduleHidePanel();
         void perform(message);
       });
       bar.append(button);
@@ -45,8 +54,8 @@
     for (const type of ['pointerdown', 'mousedown', 'dblclick']) {
       bar.addEventListener(type, event => event.stopPropagation());
     }
-    bar.addEventListener('pointerenter', () => clearTimeout(panelTimer));
-    bar.addEventListener('pointerleave', () => { panelTimer = setTimeout(hidePanel, 2500); });
+    bar.addEventListener('pointerenter', () => { panelHovered = true; scheduleHidePanel(); });
+    bar.addEventListener('pointerleave', () => { panelHovered = false; scheduleHidePanel(); });
     shadow.append(style, bar);
     return { host };
   }
@@ -61,8 +70,7 @@
     // Above the player's own bottom control bar.
     panel.host.style.top = `${Math.max(rect.top + 8, rect.bottom - 140)}px`;
     panel.host.hidden = false;
-    clearTimeout(panelTimer);
-    panelTimer = setTimeout(hidePanel, 2500);
+    scheduleHidePanel();
   }
 
   function showFeedback(text) {
