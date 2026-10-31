@@ -16,7 +16,7 @@ Wymagania: Maven 3.6.3+, JDK 8+ (do uruchomienia Mavena) oraz Node.js 18+ w PATH
 mvn clean verify
 ```
 
-Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.1.0-SNAPSHOT-firefox.zip` w fazie `package`.
+Maven uruchamia testy w fazie `test`, przygotowuje katalog `target/extension` i tworzy `target/video-playback-controller-1.1.0-firefox.zip` w fazie `package`.
 
 - `mvn test` — same testy.
 - `mvn package -DskipTests` — pakowanie bez testów.
